@@ -1,0 +1,32 @@
+E01
+Citizens must register with a user ID and password before applying for e-Sevai services online - TNeGA Citizen Portal
+
+E02
+A Citizen Access Number (CAN) is required to access e-Sevai services - TNeGA FAQ 
+
+E03
+Citizens can use the same CAN for applying for multiple e-Sevai services - TNeGA FAQ
+
+E04
+Community Certificate applications require multiple documents, including photo, address proof, family community certificate and self-declaration - TNeGA FAQ
+
+E05
+Income Certificate applications can require several documents, including address proof, land/property details, family/smart card, salary certificate and PAN card - TNeGA FAQ
+
+E06
+Citizens can check application status online using their application number - TNeGA FAQ
+
+E07
+The official e-Sevai process includes identifying the required service, providing requested information, paying applicable charges and collecting the receipt - TNeGA e-Sevai Portal
+
+E08
+e-Sevai centres provide access to numerous certificates, welfare pensions and other government services - Tamil Nadu IT Department
+
+E09
+Tamil Nadu describes e-Sevai centres as front-end delivery points for government and other services, particularly for rural citizens - Tamil Nadu IT Department
+
+E10
+A 2024–25 Tamil Nadu Citizen Charter states that e-Sevai centres provide government and welfare services, particularly for people in remote/rural areas, and provide a single place for multiple services - Tamil Nadu Cooperative Department Citizen Charter
+
+https://www.tnesevai.tn.gov.in/citizen/
+https://it.tn.gov.in/en/List_of_services_offered_in_e-sevai_centres
