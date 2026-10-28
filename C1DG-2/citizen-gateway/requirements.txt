@@ -1,0 +1,6 @@
+flask>=3.0
+scikit-learn
+pandas
+anthropic
+pillow
+pypdf
