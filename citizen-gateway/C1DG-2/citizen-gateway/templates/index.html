@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Citizen-First Digital Gateway for Welfare</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Tamil:wght@400;600;700&family=Source+Serif+4:wght@600;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='app.css') }}">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top"><div class="wrap bar">
+  <a class="brand" href="#home" data-go="home"><span class="logo" aria-hidden="true">அ</span><span><b data-i="brand">Citizen Gateway</b><small data-i="tag">Welfare guidance</small></span></a>
+  <nav id="nav" aria-label="Main"></nav>
+  <label class="lang"><span class="sr" data-i="langlabel">Language</span>
+    <select id="lang"><option value="auto">Auto</option><option value="en">English</option><option value="ta">தமிழ்</option><option value="tanglish">Tanglish</option></select></label>
+</div></header>
+
+<main id="main" class="wrap" tabindex="-1">
+<div id="statusbar" class="banner" role="status" hidden></div>
+
+<section id="home" class="page">
+  <div class="hero">
+    <p class="eyebrow" data-i="eyebrow">Government schemes, explained simply</p>
+    <h1 data-i="h1">Speak. Understand. Apply with confidence.</h1>
+    <p class="lead" data-i="lead">Ask in Tamil, English or Tanglish. Find schemes that may suit you, learn which documents to prepare and follow the steps on the official website.</p>
+    <button class="cta" data-go="assistant" data-start="1"><span aria-hidden="true">🎙</span> <span data-i="cta">Talk to Your Citizen Assistant</span></button>
+    <p class="hint" data-i="hint">No sign-in. We never ask for Aadhaar numbers, OTPs or passwords.</p>
+  </div>
+  <div class="tiles">
+    <button class="tile" data-go="schemes"><b data-i="t1">Explore schemes</b><span data-i="t1d">Browse by category or search in everyday words.</span></button>
+    <button class="tile" data-go="documents"><b data-i="t2">Document help</b><span data-i="t2d">See what to prepare and check your file before uploading.</span></button>
+    <button class="tile" data-go="guidance"><b data-i="t3">Application steps</b><span data-i="t3d">Simple numbered steps with official links.</span></button>
+    <button class="tile" data-go="forme"><b data-i="t4">Schemes for me</b><span data-i="t4d">Tell us a little; see possible matches.</span></button>
+  </div>
+</section>
+
+<section id="assistant" class="page" hidden>
+  <div class="chatwrap">
+    <div class="chathead">
+      <h2 data-i="n_assistant">Assistant</h2>
+      <div class="ctrls">
+        <label class="sw"><input type="checkbox" id="convo"> <span data-i="convo">Voice conversation</span></label>
+        <label class="sw"><input type="checkbox" id="autospeak"> <span data-i="autospeak">Read answers aloud</span></label>
+        <button class="ghost" id="newchat" data-i="newchat">New conversation</button>
+      </div>
+    </div>
+    <div id="voicenote" class="banner" hidden></div>
+    <div id="log" class="log" aria-live="polite" aria-label="Conversation"></div>
+    <div id="heard" class="heard" hidden>
+      <span class="sr" data-i="heardlabel">Recognised text</span>
+      <textarea id="heardtext" rows="2" aria-label="Recognised text, you can edit it"></textarea>
+      <div class="row"><button id="heardsend" class="primary" data-i="send">Send</button><button id="heardretry" class="ghost" data-i="retry">Speak again</button><button id="heardx" class="ghost" data-i="cancel">Cancel</button></div>
+    </div>
+    <div class="speakbar" id="speakbar" hidden>
+      <button class="ghost" id="sp-play" data-i="play">▶ Play</button><button class="ghost" id="sp-pause" data-i="pause">⏸ Pause</button>
+      <button class="ghost" id="sp-stop" data-i="stop">■ Stop</button><button class="ghost" id="sp-replay" data-i="replay">↻ Replay</button>
+    </div>
+    <div class="microw">
+      <button id="mic" class="mic" aria-pressed="false" aria-label="Start speaking"><span class="micicon" aria-hidden="true">🎙</span></button>
+      <p id="micstate" class="micstate" aria-live="polite" data-i="micidle">Tap the microphone and speak</p>
+    </div>
+    <form id="chatform" class="composer" autocomplete="off">
+      <label class="attach" title="Attach a PDF or photo"><span aria-hidden="true">📎</span><span class="sr" data-i="attach">Attach a document</span>
+        <input type="file" id="chatfile" accept=".pdf,.jpg,.jpeg,.png,.webp" hidden></label>
+      <input id="msg" type="text" maxlength="1500" placeholder="Type your question…" aria-label="Your question" data-ph="ph">
+      <button class="primary" type="submit" data-i="send">Send</button>
+    </form>
+    <div id="fileinfo" class="fileinfo" hidden>
+      <span id="fname"></span><button class="ghost" id="fclear" type="button" data-i="remove">Remove</button>
+      <label class="consent"><input type="checkbox" id="consent"> <span data-i="consent">I agree to send this file to an external AI service so it can be explained. It is not stored by this website.</span></label>
+    </div>
+    <div class="chips" id="chips"></div>
+  </div>
+</section>
+
+<section id="schemes" class="page" hidden>
+  <h2 data-i="n_schemes">Scheme Explorer</h2>
+  <form id="sform" class="filters">
+    <input id="sq" type="search" aria-label="Search schemes" placeholder="e.g. scholarship for girls, farmer, vivasayi…" data-ph="sph">
+    <select id="scat" aria-label="Category"><option value="">All categories</option></select>
+    <select id="slevel" aria-label="Coverage"><option value="">Central + State</option><option value="Central">Central</option><option value="State">Tamil Nadu / State</option></select>
+    <button class="primary" data-i="search">Search</button>
+  </form>
+  <p id="scount" class="muted"></p><div id="slist" class="grid"></div><div id="spager" class="pager"></div>
+</section>
+
+<section id="documents" class="page" hidden>
+  <h2 data-i="n_documents">Document Assistant</h2>
+  <form id="dform" class="filters"><input id="dq" type="search" aria-label="Service or document" placeholder="e.g. income certificate, Aadhaar address update" data-ph="dph"><button class="primary" data-i="search">Search</button></form>
+  <div id="dres"></div>
+  <div class="panel"><h3 data-i="check">Check a file before uploading</h3>
+    <p class="muted" data-i="checkd">Checks type, size and whether the file opens. Nothing is stored. Each government portal has its own limits; confirm them on the portal.</p>
+    <p class="muted"><span data-i="limit">This website accepts PDF, JPG, PNG, WEBP up to</span> <b id="maxmb">5</b> MB.</p>
+    <input type="file" id="vfile" accept=".pdf,.jpg,.jpeg,.png,.webp" aria-label="Choose a file"><div id="vres" role="status"></div></div>
+</section>
+
+<section id="guidance" class="page" hidden>
+  <h2 data-i="n_guidance">Application Guidance</h2>
+  <form id="gform" class="filters"><input id="gq" type="search" aria-label="What do you want to apply for" placeholder="e.g. community certificate, scholarship, ration card" data-ph="gph"><button class="primary" data-i="search">Search</button></form>
+  <div id="gres"></div>
+</section>
+
+<section id="forme" class="page" hidden>
+  <h2 data-i="n_forme">My Scheme Recommendations</h2>
+  <p class="muted" data-i="formed">Optional. Your answers stay in this browser only. Results are possible matches based on the little you share, not a decision on eligibility.</p>
+  <form id="pform" class="panel pgrid">
+    <label>Age<input type="number" id="p_age" min="0" max="120"></label>
+    <label>Gender<select id="p_gender"><option value="">–</option><option>Female</option><option>Male</option><option>Other</option></select></label>
+    <label>Occupation<select id="p_occupation"><option value="">–</option><option>Student</option><option>Farmer</option><option>Worker</option><option>Self-employed / unemployed</option><option>Retired</option></select></label>
+    <label>Education (students)<select id="p_education"><option value="">–</option><option>School</option><option>College</option></select></label>
+    <label>Community<select id="p_community"><option value="">–</option><option>SC</option><option>ST</option><option>BC/MBC</option><option>Other</option></select></label>
+    <label>State<select id="p_state"><option>Tamil Nadu</option><option>Other</option></select></label>
+    <label class="chk"><input type="checkbox" id="p_widow"> Widow</label><label class="chk"><input type="checkbox" id="p_disabled"> Differently abled</label>
+    <div class="row"><button class="primary" data-i="show">Show possible schemes</button><button class="ghost" type="button" id="pclear" data-i="clear">Clear my details</button></div>
+  </form>
+  <div id="pres"></div>
+</section>
+
+<section id="about" class="page" hidden>
+  <h2 data-i="n_about">About & Help</h2>
+  <div class="panel prose" id="abouttext"></div>
+</section>
+</main>
+
+<footer class="wrap foot"><p>Independent guidance tool; not an official government website. Always confirm details on the official source. Data is a dated snapshot of the myScheme portal.</p></footer>
+<dialog id="dlg"><div id="dlgbody"></div><button class="primary" id="dlgx" data-i="close">Close</button></dialog>
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+</body></html>

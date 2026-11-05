@@ -1,0 +1,61 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Citizen 1st Digital Gateway</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Tamil&display=swap" rel="stylesheet">
+<style>
+body{font-family:'Noto Sans Tamil',Arial,sans-serif;background:#f4f7fb;margin:0;color:#1b2a3a}
+header{background:#1f4e78;color:#fff;padding:12px 16px;display:flex;justify-content:space-between;align-items:center}
+main{max-width:760px;margin:0 auto;padding:16px}
+.card{background:#fff;border-radius:10px;padding:14px;margin:10px 0;box-shadow:0 1px 3px #0002}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+button{font:inherit;cursor:pointer;border:1px solid #1f4e78;background:#fff;color:#1f4e78;border-radius:8px;padding:10px}
+button.p{background:#1f4e78;color:#fff} input{font:inherit;width:100%;box-sizing:border-box;padding:10px;border:1px solid #aab;border-radius:8px}
+.tag{font-size:.8rem;padding:2px 8px;border-radius:10px;background:#e6eef7} .note{font-size:.85rem;color:#a33}
+a.apply{display:inline-block;background:#2e7d32;color:#fff;padding:10px 16px;border-radius:8px;text-decoration:none}
+</style></head><body>
+<header><b>🇮🇳 Citizen 1st Digital Gateway</b><button onclick="toggle()" id="lg">தமிழ்</button></header>
+<nav id=nav style="display:flex;gap:6px;padding:8px 16px;background:#fff;overflow-x:auto"></nav><main id="v"></main>
+<script>
+const CATS=[['Education','🎓','கல்வி'],['Healthcare','🏥','மருத்துவம்'],['Employment','💼','வேலை'],['Agriculture','🌾','விவசாயம்'],['Pension','👴','ஓய்வூதியம்'],['Welfare','💰','நலத்திட்டங்கள்']];
+const L={en:{hi:'Hello! Ask me anything about government services. Type, speak 🎤 or attach a photo/PDF 📎.',ask:'Type your doubt...',nf:'Find',na:'Assistant',nd:'Documents',nm:'For Me',dph:'e.g. Aadhaar address update, income certificate, scholarship',priv:'Saved only in this browser. Please do not enter Aadhaar, phone or bank numbers.',save:'Save & find schemes for me',h:'What government service do you need help with?',ph:'e.g. I want to apply for a scholarship',go:'Find services',unsure:"I couldn't tell the category. Please choose one:",res:'Possible services for you',note:'These are possible matches, not a confirmation of eligibility. Please confirm on the official portal.',who:'Who may qualify?',docs:'Documents usually required',steps:'Application process',rel:'Schemes needing similar documents',apply:'Apply Officially',back:'← Back',why:'Why'},
+ta:{hi:'வணக்கம்! அரசு சேவைகள் பற்றி எதுவும் கேளுங்கள். தட்டச்சு செய்யலாம், 🎤 பேசலாம், 📎 படம்/PDF இணைக்கலாம்.',ask:'உங்கள் சந்தேகத்தை எழுதுங்கள்...',nf:'தேடு',na:'உதவியாளர்',nd:'ஆவணங்கள்',nm:'எனக்காக',dph:'எ.கா. ஆதார் முகவரி மாற்றம், வருமானச் சான்றிதழ், உதவித்தொகை',priv:'இந்த உலாவியில் மட்டும் சேமிக்கப்படும். ஆதார், தொலைபேசி, வங்கி எண்களை உள்ளிட வேண்டாம்.',save:'சேமித்து எனக்கான திட்டங்களைக் காட்டு',h:'எந்த அரசு சேவைக்கு உதவி தேவை?',ph:'எ.கா. உதவித்தொகைக்கு விண்ணப்பிக்க வேண்டும்',go:'சேவைகளைத் தேடு',unsure:'வகையைக் கண்டறிய முடியவில்லை. தேர்வு செய்யவும்:',res:'உங்களுக்கான சாத்தியமான சேவைகள்',note:'இவை சாத்தியமான பொருத்தங்கள் மட்டுமே; தகுதி உறுதி அல்ல. அதிகாரப்பூர்வ தளத்தில் உறுதிசெய்யவும்.',who:'யார் தகுதி பெறலாம்?',docs:'பொதுவாகத் தேவையான ஆவணங்கள்',steps:'விண்ணப்ப நடைமுறை',rel:'இதே போன்ற ஆவணங்கள் தேவைப்படும் திட்டங்கள்',apply:'அதிகாரப்பூர்வமாக விண்ணப்பிக்க',back:'← பின்',why:'ஏன்'}};
+let lang='en',sid=(crypto.randomUUID?crypto.randomUUID():String(Math.random())),S={cat:null,ans:[],q:''};
+const v=document.getElementById('v'),t=k=>L[lang][k],esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const post=async(u,d)=>(await fetch(u,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sid,...d})})).json();
+const opt=s=>{const p=s.split(' / ');return lang=='ta'&&p[1]?p[1]:p[0]};
+function toggle(){lang=lang=='en'?'ta':'en';document.getElementById('lg').textContent=lang=='en'?'தமிழ்':'English';tab(cur)}
+function home(msg=''){S={cat:null,ans:[],q:''};v.innerHTML=`<div class=card><h3>${t('h')}</h3><p>${msg}</p><div class=grid>${CATS.map(c=>`<button onclick="pick('${c[0]}')">${c[1]}<br>${lang=='ta'?c[2]:c[0]}</button>`).join('')}</div></div>
+<div class=card><input id=q placeholder="${t('ph')}" onkeydown="if(event.key=='Enter')go()"><p><button class=p onclick="go()">${t('go')}</button></p></div>`}
+async function go(){S.q=document.getElementById('q').value.trim();if(!S.q)return;start(await post('/api/understand',{query:S.q}))}
+async function pick(c){start(await post('/api/understand',{category:c}))}
+function start(r){if(!r.category)return home(t('unsure'));S.cat=r.category;S.ans=[];ask(r.question)}
+function ask(q){v.innerHTML=`<div class=card><span class=tag>${S.cat}</span><h3>${esc(opt(q.q.replace(' / ','|').split('|').join(' / ')))}</h3><div class=grid>${q.options.map(o=>`<button onclick='answer(${JSON.stringify(o)})'>${esc(opt(o))}</button>`).join('')}</div><p><button onclick="home()">${t('back')}</button></p></div>`}
+async function answer(o){S.ans.push(o);const r=await post('/api/question',{category:S.cat,answers:S.ans});r.question?ask(r.question):results()}
+async function results(){back=results;const r=await post('/api/recommend',{category:S.cat,answers:S.ans,query:S.q});
+v.innerHTML=`<div class=card><h3>${t('res')}</h3><p class=note>${t('note')}</p></div>`+r.results.map(x=>`<div class=card><b>${esc(x.name)}</b> <span class=tag>${x.score}% · ${x.label}</span><br><small>${t('why')}: ${x.why.map(esc).join(' · ')}</small><p><button onclick="detail('${x.id}')">Open</button></p></div>`).join('')+`<button onclick="home()">${t('back')}</button>`}
+async function detail(id){const r=await (await fetch(`/api/service/${id}?sid=${sid}`)).json(),s=r.service,ul=a=>'<ul>'+a.map(i=>`<li>${esc(i)}</li>`).join('')+'</ul>';
+v.innerHTML=`<div class=card><h3>${esc(s.service_name)}</h3><p>${esc(s.description)}</p><b>${t('who')}</b>${ul(s.eligibility.slice(0,6))}<b>${t('docs')}</b>${ul(s.required_documents)}<b>${t('steps')}</b><ol>${s.application_steps.slice(0,8).map(i=>`<li>${esc(i)}</li>`).join('')}</ol>
+${r.related.length?`<b>${t('rel')}</b>${ul(r.related.map(x=>x.name))}`:''}<p class=note>${t('note')}</p>
+<a class=apply target=_blank rel=noopener href="${esc(s.official_url)}" onclick="post('/api/log',{event:'apply_click',detail:'${esc(s.service_name).replace(/'/g,'')}'})">🔗 ${t('apply')}</a>
+<p><button onclick="back()">${t('back')}</button></p></div>`}
+let cur='find',MSG=[],CH=[],pend=null,back=home,M=[];
+const $=id=>document.getElementById(id),NAV=[['find','nf'],['chat','na'],['docs','nd'],['me','nm']],nl=s=>esc(s).replace(/\n/g,'<br>');
+const prof=()=>{try{return JSON.parse(localStorage.getItem('prof')||'{}')}catch(e){return{}}};
+function nav(){$('nav').innerHTML=NAV.map(n=>`<button class="${cur==n[0]?'p':''}" onclick="tab('${n[0]}')">${t(n[1])}${n[0]=='me'&&M.length?' ('+M.length+')':''}</button>`).join('')}
+function tab(n){cur=n;nav();({find:home,chat:chatView,docs:docsView,me:meView})[n]()}
+function chatView(){v.innerHTML=`<div class=card><div id=log style="min-height:220px;max-height:50vh;overflow:auto"></div><small id=att></small><div style="display:flex;gap:6px;margin-top:8px"><input id=cm placeholder="${t('ask')}" onkeydown="if(event.key=='Enter')send()"><button onclick="mic()">🎤</button><label style="cursor:pointer;padding:10px;border:1px solid #1f4e78;border-radius:8px">📎<input type=file hidden accept="image/*,.pdf" onchange="pend=this.files[0];$('att').textContent=pend.name"></label><button class=p onclick="send()">➤</button></div></div>`;draw()}
+function draw(){const l=$('log');if(!l)return;l.innerHTML=MSG.length?MSG.map(m=>`<div style="margin:6px 0;text-align:${m.r=='me'?'right':'left'}"><span style="display:inline-block;padding:8px 12px;border-radius:12px;background:${m.r=='me'?'#dbeafe':'#eef2f6'};max-width:90%;text-align:left">${nl(m.t)}</span></div>`).join(''):'<p>👋 '+t('hi')+'</p>';l.scrollTop=l.scrollHeight}
+async function send(){const m=$('cm').value.trim();if(!m&&!pend)return;MSG.push({r:'me',t:m+(pend?' 📎 '+pend.name:'')},{r:'bot',t:'…'});draw();$('cm').value='';
+const fd=new FormData();fd.append('message',m);fd.append('history',JSON.stringify(CH.slice(-8)));fd.append('profile',JSON.stringify(prof()));fd.append('sid',sid);if(pend)fd.append('file',pend);pend=null;$('att').textContent='';
+let r;try{r=await(await fetch('/api/chat',{method:'POST',body:fd})).json()}catch(e){r={reply:'Network error. Please try again.',mode:'ai'}}
+CH.push({role:'user',content:m||'(file)'},{role:'assistant',content:r.reply});MSG[MSG.length-1].t=r.reply+(r.mode=='basic'?'\n\n(Basic mode: set ANTHROPIC_API_KEY for AI answers and photo reading)':'');draw()}
+function mic(){const R=window.SpeechRecognition||window.webkitSpeechRecognition;if(!R)return alert('Voice typing works in Chrome or Edge');const r=new R();r.lang=lang=='ta'?'ta-IN':'en-IN';r.onresult=e=>{$('cm').value=e.results[0][0].transcript};r.start()}
+function docsView(){v.innerHTML=`<div class=card><h3>📄 ${t('nd')}</h3><input id=dq placeholder="${t('dph')}" onkeydown="if(event.key=='Enter')docs()"><p><button class=p onclick="docs()">${t('go')}</button></p></div><div id=dr></div>`}
+async function docs(){const q=$('dq').value.trim();if(!q)return;const r=await(await fetch('/api/documents?sid='+sid+'&q='+encodeURIComponent(q))).json();
+$('dr').innerHTML=r.results.map(x=>`<div class=card><span class=tag>${x.type}</span> <b>${esc(x.title)}</b><p><b>${t('docs')}</b></p>${x.docs.length?x.docs.map(d=>`<label style="display:block;margin:4px 0"><input type=checkbox> ${esc(d)}</label>`).join(''):'—'}${x.steps.length?`<p><b>${t('steps')}</b></p><ol>${x.steps.map(s=>`<li>${esc(s)}</li>`).join('')}</ol>`:''}${x.url?`<a class=apply target=_blank rel=noopener href="${esc(x.url)}">🔗 ${t('apply')}</a>`:''}${x.note?`<p class=note>${esc(x.note)}</p>`:''}</div>`).join('')||'<div class=card>—</div>'}
+const F=[['age','Age','number'],['gender','Gender',['','Female','Male','Other']],['occupation','Occupation',['','Student','Farmer','Self-employed / unemployed','Worker','Homemaker','Retired']],['education','Education (students)',['','School','College']],['community','Community',['','SC','ST','BC/MBC','Other']],['state','State',['Tamil Nadu','Other']]];
+function meView(){const p=prof();v.innerHTML=`<div class=card><h3>👤 ${t('nm')}</h3><p class=note>${t('priv')}</p>${F.map(f=>`<p>${f[1]}<br>${f[2]=='number'?`<input id=p_${f[0]} type=number value="${p[f[0]]||''}">`:`<select id=p_${f[0]} style="font:inherit;padding:8px">${f[2].map(o=>`<option ${p[f[0]]==o?'selected':''}>${o}</option>`).join('')}</select>`}</p>`).join('')}<label><input type=checkbox id=p_widow ${p.widow?'checked':''}> Widow</label> <label><input type=checkbox id=p_disabled ${p.disabled?'checked':''}> Differently abled</label><p><button class=p onclick="saveP()">${t('save')}</button></p></div><div id=ml></div>`;if(M.length)showM()}
+async function saveP(){const p={widow:$('p_widow').checked,disabled:$('p_disabled').checked};F.forEach(f=>p[f[0]]=$('p_'+f[0]).value);try{localStorage.setItem('prof',JSON.stringify(p))}catch(e){}await loadM();nav();showM()}
+async function loadM(){if(Object.keys(prof()).length)M=(await post('/api/matches',{profile:prof()})).matches}
+function showM(){$('ml').innerHTML=`<p class=note>${t('note')}</p>`+M.map(x=>`<div class=card><b>${esc(x.name)}</b><br><small>${t('why')}: ${x.why.map(esc).join(' · ')}</small><p><button onclick="back=meView;detail('${x.id}')">Open</button></p></div>`).join('')}
+loadM().then(nav);tab('find');
+</script></body></html>
